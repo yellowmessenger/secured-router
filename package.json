@@ -1,0 +1,24 @@
+{
+  "name": "secured-router",
+  "version": "1.0.0",
+  "description": "secure router for ym",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yellowmessenger/secured-router.git"
+  },
+  "keywords": [
+    "ym",
+    "secure",
+    "router"
+  ],
+  "author": "sachin govind (github.com/sac0)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yellowmessenger/secured-router/issues"
+  },
+  "homepage": "https://github.com/yellowmessenger/secured-router#readme"
+}
