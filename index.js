@@ -1,4 +1,25 @@
 'use strict';
+const mongoose = require('mongoose');
+const Promise = require('bluebird');
+mongoose.Promise = Promise;
+
+const config = require('config.js');
+
+const logs = mongoose.createConnection(config.database.mongo.replSetUrl + '/logs' + config.database.mongo.replSetOption);
+
+// Schema Definition
+const logSchema = mongoose.Schema({
+    botId: String,
+    userId: String,
+    comment: String,
+    request: mongoose.Schema.Types.Mixed,
+    created: Date
+});
+
+logSchema.index({botId: 1});
+logSchema.index({botId: 1, userId:1});
+
+const Log = db.model('logs', logSchema);
 
 let isBotAdmin = function (bot, req) {
     if (req.user) {
@@ -11,7 +32,7 @@ let isBotAdmin = function (bot, req) {
     return false;
 };
 
-let post = function (router, route, secured, roles, callback) {
+let post = function (router, route, secured, roles, callback, comment) {
     router.post(route, function (req, res, next) {
         if (!secured) {
             callback(req, res, next);
@@ -33,7 +54,20 @@ let post = function (router, route, secured, roles, callback) {
                     return;
                 }
             }
+
+            let log = {
+                botId: bot,
+                userId: req.user,
+                request: mongoose.Schema.Types.Mixed,
+                created: new Date()
+            };
+            if(comment){
+                log.comment= comment;
+            }
         }
+
+        const logToBeSaved = new Log(log);
+        return logToBeSaved.save();
         res.sendStatus(401);
     });
 };
@@ -120,6 +154,7 @@ let deleteMethod = function (router, route, secured, roles, callback) {
 };
 
 module.exports = {
+    route,
     post,
     get,
     deleteMethod,
