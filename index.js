@@ -1,25 +1,5 @@
 'use strict';
-const mongoose = require('mongoose');
-const Promise = require('bluebird');
-mongoose.Promise = Promise;
-
-const config = require('config.js');
-
-const logs = mongoose.createConnection(config.database.mongo.replSetUrl + '/logs' + config.database.mongo.replSetOption);
-
-// Schema Definition
-const logSchema = mongoose.Schema({
-    botId: String,
-    userId: String,
-    comment: String,
-    request: mongoose.Schema.Types.Mixed,
-    created: Date
-});
-
-logSchema.index({botId: 1});
-logSchema.index({botId: 1, userId:1});
-
-const Log = db.model('logs', logSchema);
+const logs = require('logs.js');
 
 let isBotAdmin = function (bot, req) {
     if (req.user) {
@@ -46,6 +26,19 @@ let post = function (router, route, secured, roles, callback, comment) {
 
             let bot = req.query['bot'] || req.cookies['bot'];
 
+            let log = {
+                botId: bot,
+                userId: req.user,
+                request: req.body,
+                created: new Date()
+            };
+
+            if (comment) {
+                log.comment = comment;
+            }
+
+            logs.create(log)
+
             for (let i = 0; i < req.user.roles.length; i++) {
                 if (bot === req.user.roles[i].owner && roles.indexOf(req.user.roles[i].role) !== -1) {
                     req.bot = bot;
@@ -54,20 +47,7 @@ let post = function (router, route, secured, roles, callback, comment) {
                     return;
                 }
             }
-
-            let log = {
-                botId: bot,
-                userId: req.user,
-                request: mongoose.Schema.Types.Mixed,
-                created: new Date()
-            };
-            if(comment){
-                log.comment= comment;
-            }
         }
-
-        const logToBeSaved = new Log(log);
-        return logToBeSaved.save();
         res.sendStatus(401);
     });
 };
@@ -85,6 +65,19 @@ let get = function (router, route, secured, roles, callback) {
             }
 
             let bot = req.query['bot'] || req.cookies['bot'];
+
+            let log = {
+                botId: bot,
+                userId: req.user,
+                request: req.body,
+                created: new Date()
+            };
+
+            if (comment) {
+                log.comment = comment;
+            }
+
+            logs.create(log)
 
             for (let i = 0; i < req.user.roles.length; i++) {
                 if (bot === req.user.roles[i].owner && roles.indexOf(req.user.roles[i].role) !== -1) {
