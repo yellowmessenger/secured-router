@@ -15,7 +15,7 @@
     "secure",
     "router"
   ],
-  "author": "sachin govind (github.com/sac0)",
+  "contributors": ["surender (github.com/say2surender)", "sachin govind (github.com/sac0)"],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/yellowmessenger/secured-router/issues"
