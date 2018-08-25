@@ -1,5 +1,5 @@
 'use strict';
-const logs = require('logs.js');
+const logs = require('./log');
 
 let isBotAdmin = function (bot, req) {
     if (req.user) {
@@ -26,11 +26,20 @@ let post = function (router, route, secured, roles, callback, comment) {
 
             let bot = req.query['bot'] || req.cookies['bot'];
 
+            let request = {
+                url: req.url,
+                method: req.method,
+                headers: req.headers,
+                params: req.params,
+                query: req.query,
+                body: req.body,
+            }
+
             let log = {
                 botId: bot,
-                userId: req.user,
-                request: req.body,
-                created: new Date()
+                userId: req.user.id,
+                request: request,
+                timestamp: new Date()
             };
 
             if (comment) {
@@ -52,7 +61,7 @@ let post = function (router, route, secured, roles, callback, comment) {
     });
 };
 
-let get = function (router, route, secured, roles, callback) {
+let get = function (router, route, secured, roles, callback, comment) {
     router.get(route, function (req, res, next) {
         if (!secured) {
             callback(req, res, next);
@@ -66,11 +75,19 @@ let get = function (router, route, secured, roles, callback) {
 
             let bot = req.query['bot'] || req.cookies['bot'];
 
+            let request = {
+                url: req.url,
+                method: req.method,
+                headers: req.headers,
+                params: req.params,
+                query: req.query
+            }
+
             let log = {
                 botId: bot,
-                userId: req.user,
-                request: req.body,
-                created: new Date()
+                userId: req.user.id,
+                request: request,
+                timestamp: new Date()
             };
 
             if (comment) {
@@ -147,7 +164,6 @@ let deleteMethod = function (router, route, secured, roles, callback) {
 };
 
 module.exports = {
-    route,
     post,
     get,
     deleteMethod,

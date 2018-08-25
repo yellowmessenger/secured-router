@@ -1,5 +1,6 @@
 const Promise = require('bluebird');
-const config = require('config.js');
+const config = require('./config');
+const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 const db = mongoose.createConnection(config.database.mongo.replSetUrl + '/logs' + config.database.mongo.replSetOption);
@@ -10,7 +11,7 @@ const logSchema = mongoose.Schema({
     userId: String,
     comment: String,
     request: mongoose.Schema.Types.Mixed,
-    created: Date
+    timestamp: Date
 });
 
 logSchema.index({botId: 1});

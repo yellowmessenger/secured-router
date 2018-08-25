@@ -1,6 +1,6 @@
 {
   "name": "secured-router",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "secure router for ym",
   "main": "index.js",
   "scripts": {
